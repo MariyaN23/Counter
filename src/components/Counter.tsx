@@ -29,9 +29,7 @@ export const Counter = () => {
                 </div>
             </div>
             <div className={s.counter}>
-                <div className={number === 5 ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>
-                    {number}
-                </div>
+                <div className={number === 5 ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{number}</div>
                 <div className={s.buttons}>
                     <Button name={'inc'} callBack={numberChange} disabled={disableButton}/>
                     <Button name={'reset'} callBack={numberReset} disabled={number === 0}/>
