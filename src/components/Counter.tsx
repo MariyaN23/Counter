@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import s from './Counter.module.css'
 import {Button} from './Button';
 
@@ -17,12 +17,23 @@ export const Counter = () => {
         setDisableButton(false)
     }
 
+
+    const [maxValue,setMaxValue] = useState(0)
+    const [startValue,setStartValue] = useState(0)
+
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>)=>{
+        if (Number(e.currentTarget.value)<=25&&Number(e.currentTarget.value)>=-1) {
+            setMaxValue(Number(e.currentTarget.value))
+        }
+    }
+
+
     return (
         <div className={s.wrapper}>
             <div className={s.counter}>
                 <div className={s.settings}>
-                    <div>Max value:<input type={'number'}/></div>
-                    <div>Start value:<input type={'number'}/></div>
+                    <div>Max value:<input onChange={onChangeHandler} value={maxValue} type={'number'}/></div>
+                    <div>Start value:<input value={startValue} type={'number'}/></div>
                 </div>
                 <div className={s.buttons}>
                     <Button name={'set'} callBack={()=>{}} disabled={false}/>
