@@ -16,12 +16,14 @@ export const Counter = () => {
     }
 
     const numberReset = () => {
-        setNumber(0)
+        setNumber(startValue)
         setDisableButton(false)
     }
 
     const changeMaxValue = (e: ChangeEvent<HTMLInputElement>) => {
-        setMaxValue(Number(e.currentTarget.value))
+        if (Number(e.currentTarget.value)>-2 && Number(e.currentTarget.value)<25) {
+            setMaxValue(Number(e.currentTarget.value))
+        }
     }
 
     useEffect(()=> {
@@ -33,7 +35,9 @@ export const Counter = () => {
     }, [startValue])
 
     const changeStartValue = (e: ChangeEvent<HTMLInputElement>) => {
-        setStartValue(Number(e.currentTarget.value))
+        if (Number(e.currentTarget.value)>-2 && Number(e.currentTarget.value)<25) {
+            setStartValue(Number(e.currentTarget.value))
+        }
     }
 
     /*useEffect(()=> {
@@ -63,7 +67,9 @@ export const Counter = () => {
                 </div>
             </div>
             <div className={s.counter}>
-                <div className={number === maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{number}</div>
+                {startValue<0 || maxValue<0
+                    ? <div className={s.tablo}>error</div>
+                    : <div className={number === maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{number}</div>}
                 <div className={s.buttons}>
                     <Button name={'inc'} callBack={numberChange} disabled={disableButton}/>
                     <Button name={'reset'} callBack={numberReset} disabled={number === 0}/>
