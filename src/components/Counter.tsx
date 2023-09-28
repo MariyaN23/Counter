@@ -40,35 +40,31 @@ export const Counter = () => {
         }
     }
 
-    /*useEffect(()=> {
-        let startValueLocal = localStorage.getItem('setStartValue')
-        if (startValueLocal) {
-            let newStartValue = JSON.parse(startValueLocal)
-            setStartValue(newStartValue)
-        }
-    }, [])*/
-
     const setButton = () => {
         if (maxValue > startValue && startValue >= 0) {
             setNumber(startValue)
         }
     }
 
+    const incorrectMaxValue = maxValue < 0 || maxValue <= startValue
+    const incorrectStartValue = startValue < 0 || startValue === maxValue
+    const incorrectValue = startValue < 0 || maxValue < 0 || startValue === maxValue || startValue > maxValue
+
     return (
         <div className={s.wrapper}>
             <div className={s.counter}>
                 <div className={s.settings}>
-                    <div>Max value:<input onChange={changeMaxValue} value={maxValue} type={'number'}/></div>
-                    <div>Start value:<input onChange={changeStartValue} value={startValue} type={'number'}/></div>
+                    <div className={incorrectMaxValue ? s.settingsError : ''}>Max value:<input onChange={changeMaxValue} value={maxValue} type={'number'}/></div>
+                    <div className={incorrectStartValue ? s.settingsError : ''}>Start value:<input onChange={changeStartValue} value={startValue} type={'number'}/></div>
                 </div>
                 <div className={s.buttons}>
                     <Button name={'set'} callBack={setButton}
-                            disabled={maxValue <= startValue || startValue < 0 || maxValue < 0}/>
+                            disabled={incorrectValue}/>
                 </div>
             </div>
             <div className={s.counter}>
-                {startValue<0 || maxValue<0
-                    ? <div className={s.tablo}>error</div>
+                {incorrectValue
+                    ? <div className={s.error}>Incorrect value!</div>
                     : <div className={number === maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{number}</div>}
                 <div className={s.buttons}>
                     <Button name={'inc'} callBack={numberChange} disabled={disableButton}/>

@@ -40,6 +40,20 @@
     color: #D4ADFC;
 }
 
+.error {
+    height: 300px;
+    width: 300px;
+    border: 1px solid #5C469C;
+    background-color: #5C469C;
+    font-size: 40px;
+    margin: 30px;
+    border-radius: 5px;
+    color: #ff0081;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .tabloChange {
     color: #ff0081;
 }
@@ -55,6 +69,20 @@
     font-size: 20px;
 }
 
+.setValues {
+    height: 300px;
+    width: 300px;
+    border: 1px solid #5C469C;
+    background-color: #5C469C;
+    font-size: 40px;
+    margin: 30px;
+    border-radius: 5px;
+    color: #D4ADFC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .settings input {
     border-radius: 5px;
     border: 1px solid #0C134F;
@@ -63,6 +91,10 @@
     width: 100px;
     font-size: 25px;
     text-align: center;
+}
+
+.settingsError input {
+    background-color: #ff0081;
 }
 
 .settings div {
