@@ -7,8 +7,26 @@ export const Counter = () => {
     const [number, setNumber] = useState<number>(0)
     const [disableButton, setDisableButton] = useState<boolean>(false)
 
-    const [maxValue, setMaxValue] = useState(5)
-    const [startValue, setStartValue] = useState(0)
+    const getMaxValueFromLocalstorage = ()=> {
+        let maxValueFromLocalStorage = localStorage.getItem('maxValue')
+        if (maxValueFromLocalStorage) {
+            return JSON.parse(maxValueFromLocalStorage)
+        } else {
+            return 5
+        }
+    }
+
+    const getStartValueFromLocalstorage = ()=> {
+        let startValueFromLocalStorage = localStorage.getItem('startValue')
+        if (startValueFromLocalStorage) {
+            return JSON.parse(startValueFromLocalStorage)
+        } else {
+            return 0
+        }
+    }
+
+    const [maxValue, setMaxValue] = useState(getMaxValueFromLocalstorage)
+    const [startValue, setStartValue] = useState(getStartValueFromLocalstorage)
 
     const numberChange = () => {
         setNumber(number + 1);
@@ -27,11 +45,11 @@ export const Counter = () => {
     }
 
     useEffect(()=> {
-        localStorage.setItem('setMaxValue', JSON.stringify(maxValue))
+        localStorage.setItem('maxValue', JSON.stringify(maxValue))
     }, [maxValue])
 
     useEffect(()=> {
-        localStorage.setItem('setStartValue', JSON.stringify(startValue))
+        localStorage.setItem('startValue', JSON.stringify(startValue))
     }, [startValue])
 
     const changeStartValue = (e: ChangeEvent<HTMLInputElement>) => {
