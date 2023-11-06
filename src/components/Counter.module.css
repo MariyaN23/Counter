@@ -104,3 +104,17 @@
     margin-top: 50px;
     gap: 50px;
 }
+
+.valueChanges {
+    height: 300px;
+    width: 300px;
+    border: 1px solid #5C469C;
+    background-color: #5C469C;
+    font-size: 40px;
+    margin: 30px;
+    border-radius: 5px;
+    color: #D4ADFC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

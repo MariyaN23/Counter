@@ -7,7 +7,7 @@ export const Counter = () => {
     const [number, setNumber] = useState<number>(0)
     const [disableButton, setDisableButton] = useState<boolean>(false)
 
-    const getMaxValueFromLocalstorage = ()=> {
+    const getMaxValueFromLocalstorage = () => {
         let maxValueFromLocalStorage = localStorage.getItem('maxValue')
         if (maxValueFromLocalStorage) {
             return JSON.parse(maxValueFromLocalStorage)
@@ -16,7 +16,7 @@ export const Counter = () => {
         }
     }
 
-    const getStartValueFromLocalstorage = ()=> {
+    const getStartValueFromLocalstorage = () => {
         let startValueFromLocalStorage = localStorage.getItem('startValue')
         if (startValueFromLocalStorage) {
             return JSON.parse(startValueFromLocalStorage)
@@ -38,29 +38,34 @@ export const Counter = () => {
         setDisableButton(false)
     }
 
+    const [valueChanges, setValueChanges] = useState(true)
+
     const changeMaxValue = (e: ChangeEvent<HTMLInputElement>) => {
-        if (Number(e.currentTarget.value)>-2 && Number(e.currentTarget.value)<25) {
+        setValueChanges(true)
+        if (Number(e.currentTarget.value) > -2 && Number(e.currentTarget.value) < 25) {
             setMaxValue(Number(e.currentTarget.value))
         }
     }
 
-    useEffect(()=> {
-        localStorage.setItem('maxValue', JSON.stringify(maxValue))
-    }, [maxValue])
-
-    useEffect(()=> {
-        localStorage.setItem('startValue', JSON.stringify(startValue))
-    }, [startValue])
-
     const changeStartValue = (e: ChangeEvent<HTMLInputElement>) => {
-        if (Number(e.currentTarget.value)>-2 && Number(e.currentTarget.value)<25) {
+        setValueChanges(true)
+        if (Number(e.currentTarget.value) > -2 && Number(e.currentTarget.value) < 25) {
             setStartValue(Number(e.currentTarget.value))
         }
     }
 
+    useEffect(() => {
+        localStorage.setItem('maxValue', JSON.stringify(maxValue))
+    }, [maxValue])
+
+    useEffect(() => {
+        localStorage.setItem('startValue', JSON.stringify(startValue))
+    }, [startValue])
+
     const setButton = () => {
         if (maxValue > startValue && startValue >= 0) {
             setNumber(startValue)
+            setValueChanges(false)
         }
     }
 
@@ -72,18 +77,22 @@ export const Counter = () => {
         <div className={s.wrapper}>
             <div className={s.counter}>
                 <div className={s.settings}>
-                    <div className={incorrectMaxValue ? s.settingsError : ''}>Max value:<input onChange={changeMaxValue} value={maxValue} type={'number'}/></div>
-                    <div className={incorrectStartValue ? s.settingsError : ''}>Start value:<input onChange={changeStartValue} value={startValue} type={'number'}/></div>
+                    <div className={incorrectMaxValue ? s.settingsError : ''}>
+                        Max value:<input onChange={changeMaxValue} value={maxValue} type={'number'}/>
+                    </div>
+                    <div className={incorrectStartValue ? s.settingsError : ''}>
+                        Start value:<input onChange={changeStartValue} value={startValue} type={'number'}/>
+                    </div>
                 </div>
                 <div className={s.buttons}>
                     <Button name={'set'} callBack={setButton}
-                            disabled={incorrectValue}/>
+                            disabled={incorrectValue || !valueChanges}/>
                 </div>
             </div>
             <div className={s.counter}>
-                {incorrectValue
-                    ? <div className={s.error}>Incorrect value!</div>
-                    : <div className={number === maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{number}</div>}
+                {incorrectValue ? <div className={s.error}>Incorrect value!</div>
+                    : valueChanges ? <div className={s.valueChanges}>enter values and press "set"</div>
+                        : <div className={number === maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{number}</div>}
                 <div className={s.buttons}>
                     <Button name={'inc'} callBack={numberChange} disabled={disableButton}/>
                     <Button name={'reset'} callBack={numberReset} disabled={number === 0}/>
