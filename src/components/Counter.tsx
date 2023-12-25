@@ -1,101 +1,75 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent} from 'react';
 import s from './Counter.module.css'
 import {Button} from './Button';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from './store';
+import {
+    increaseNumberAC,
+    InitialStateType,
+    numberResetAC,
+    setButtonAC,
+    setMaxValueAC,
+    setStartValueAC
+} from './CounterReducer';
 
 export const Counter = () => {
 
-    const [number, setNumber] = useState<number>(0)
-    const [disableButton, setDisableButton] = useState<boolean>(false)
-
-    const getMaxValueFromLocalstorage = () => {
-        let maxValueFromLocalStorage = localStorage.getItem('maxValue')
-        if (maxValueFromLocalStorage) {
-            return JSON.parse(maxValueFromLocalStorage)
-        } else {
-            return 5
-        }
-    }
-
-    const getStartValueFromLocalstorage = () => {
-        let startValueFromLocalStorage = localStorage.getItem('startValue')
-        if (startValueFromLocalStorage) {
-            return JSON.parse(startValueFromLocalStorage)
-        } else {
-            return 0
-        }
-    }
-
-    const [maxValue, setMaxValue] = useState(getMaxValueFromLocalstorage)
-    const [startValue, setStartValue] = useState(getStartValueFromLocalstorage)
+    const dispatch = useDispatch()
+    const counterSelector = useSelector<RootState, InitialStateType>(state => state.counter)
 
     const numberChange = () => {
-        setNumber(number + 1);
-        (number < maxValue - 1 ? setDisableButton(false) : setDisableButton(true))
+        dispatch(increaseNumberAC())
     }
 
     const numberReset = () => {
-        setNumber(startValue)
-        setDisableButton(false)
+        dispatch(numberResetAC())
     }
 
-    const [valueChanges, setValueChanges] = useState(true)
+    const incorrectMaxValue = counterSelector.maxValue < 0 || counterSelector.maxValue <= counterSelector.startValue
+    const incorrectStartValue = counterSelector.startValue < 0 || counterSelector.startValue === counterSelector.maxValue
+    const incorrectValue = counterSelector.startValue < 0 || counterSelector.maxValue < 0 || counterSelector.startValue === counterSelector.maxValue || counterSelector.startValue > counterSelector.maxValue
 
     const changeMaxValue = (e: ChangeEvent<HTMLInputElement>) => {
-        setValueChanges(true)
         if (Number(e.currentTarget.value) > -2 && Number(e.currentTarget.value) < 25) {
-            setMaxValue(Number(e.currentTarget.value))
+            dispatch(setMaxValueAC(Number(e.currentTarget.value)))
         }
     }
 
     const changeStartValue = (e: ChangeEvent<HTMLInputElement>) => {
-        setValueChanges(true)
         if (Number(e.currentTarget.value) > -2 && Number(e.currentTarget.value) < 25) {
-            setStartValue(Number(e.currentTarget.value))
+            dispatch(setStartValueAC(Number(e.currentTarget.value)))
         }
     }
-
-    useEffect(() => {
-        localStorage.setItem('maxValue', JSON.stringify(maxValue))
-    }, [maxValue])
-
-    useEffect(() => {
-        localStorage.setItem('startValue', JSON.stringify(startValue))
-    }, [startValue])
 
     const setButton = () => {
-        if (maxValue > startValue && startValue >= 0) {
-            setNumber(startValue)
-            setValueChanges(false)
+        if (counterSelector.maxValue > counterSelector.startValue && counterSelector.startValue >= 0) {
+            dispatch(setButtonAC())
         }
     }
-
-    const incorrectMaxValue = maxValue < 0 || maxValue <= startValue
-    const incorrectStartValue = startValue < 0 || startValue === maxValue
-    const incorrectValue = startValue < 0 || maxValue < 0 || startValue === maxValue || startValue > maxValue
 
     return (
         <div className={s.wrapper}>
             <div className={s.counter}>
                 <div className={s.settings}>
                     <div className={incorrectMaxValue ? s.settingsError : ''}>
-                        Max value:<input onChange={changeMaxValue} value={maxValue} type={'number'}/>
+                        Max value:<input onChange={changeMaxValue} value={counterSelector.maxValue} type={'number'}/>
                     </div>
                     <div className={incorrectStartValue ? s.settingsError : ''}>
-                        Start value:<input onChange={changeStartValue} value={startValue} type={'number'}/>
+                        Start value:<input onChange={changeStartValue} value={counterSelector.startValue} type={'number'}/>
                     </div>
                 </div>
                 <div className={s.buttons}>
                     <Button name={'set'} callBack={setButton}
-                            disabled={incorrectValue || !valueChanges}/>
+                            disabled={incorrectValue || !counterSelector.valueChanges}/>
                 </div>
             </div>
             <div className={s.counter}>
                 {incorrectValue ? <div className={s.error}>Incorrect value!</div>
-                    : valueChanges ? <div className={s.valueChanges}>enter values and press "set"</div>
-                        : <div className={number === maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{number}</div>}
+                    : counterSelector.valueChanges ? <div className={s.valueChanges}>enter values and press "set"</div>
+                        : <div className={counterSelector.num === counterSelector.maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{counterSelector.num}</div>}
                 <div className={s.buttons}>
-                    <Button name={'inc'} callBack={numberChange} disabled={disableButton}/>
-                    <Button name={'reset'} callBack={numberReset} disabled={number === 0}/>
+                    <Button name={'inc'} callBack={numberChange} disabled={counterSelector.disableButton}/>
+                    <Button name={'reset'} callBack={numberReset} disabled={counterSelector.num === 0}/>
                 </div>
             </div>
         </div>
