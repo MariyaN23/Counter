@@ -69,7 +69,7 @@ export const Counter = () => {
                         : <div className={counterSelector.num === counterSelector.maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{counterSelector.num}</div>}
                 <div className={s.buttons}>
                     <Button name={'inc'} callBack={numberChange} disabled={counterSelector.disableButton}/>
-                    <Button name={'reset'} callBack={numberReset} disabled={counterSelector.num === 0}/>
+                    <Button name={'reset'} callBack={numberReset} disabled={counterSelector.num === counterSelector.startValue}/>
                 </div>
             </div>
         </div>
