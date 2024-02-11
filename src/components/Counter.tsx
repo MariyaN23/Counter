@@ -2,7 +2,7 @@ import React, {ChangeEvent} from 'react';
 import s from './Counter.module.css'
 import {Button} from './Button';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from './store';
+import {RootState} from '../redux/store';
 import {
     increaseNumberAC,
     InitialStateType,
@@ -10,7 +10,7 @@ import {
     setButtonAC,
     setMaxValueAC,
     setStartValueAC
-} from './CounterReducer';
+} from '../redux/CounterReducer';
 
 export const Counter = () => {
 
@@ -28,6 +28,9 @@ export const Counter = () => {
     const incorrectMaxValue = counterSelector.maxValue < 0 || counterSelector.maxValue <= counterSelector.startValue
     const incorrectStartValue = counterSelector.startValue < 0 || counterSelector.startValue === counterSelector.maxValue
     const incorrectValue = counterSelector.startValue < 0 || counterSelector.maxValue < 0 || counterSelector.startValue === counterSelector.maxValue || counterSelector.startValue > counterSelector.maxValue
+
+    const incDisabled = counterSelector.disableButton || counterSelector.valueChanges
+    const resetDisabled  = counterSelector.num === counterSelector.startValue ||  counterSelector.valueChanges
 
     const changeMaxValue = (e: ChangeEvent<HTMLInputElement>) => {
         if (Number(e.currentTarget.value) > -2 && Number(e.currentTarget.value) < 25) {
@@ -68,8 +71,8 @@ export const Counter = () => {
                     : counterSelector.valueChanges ? <div className={s.valueChanges}>enter values and press "set"</div>
                         : <div className={counterSelector.num === counterSelector.maxValue ? (`${s.tabloChange} + ${s.tablo}`) : s.tablo}>{counterSelector.num}</div>}
                 <div className={s.buttons}>
-                    <Button name={'inc'} callBack={numberChange} disabled={counterSelector.disableButton}/>
-                    <Button name={'reset'} callBack={numberReset} disabled={counterSelector.num === counterSelector.startValue}/>
+                    <Button name={'inc'} callBack={numberChange} disabled={incDisabled}/>
+                    <Button name={'reset'} callBack={numberReset} disabled={resetDisabled}/>
                 </div>
             </div>
         </div>
